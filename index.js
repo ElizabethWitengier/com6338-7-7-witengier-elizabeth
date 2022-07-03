@@ -52,10 +52,10 @@ var questionsArr = [
 ]
 
 var quiz = document.getElementById('quiz')
-var score = 0
 var startButton = document.getElementById('start-quiz')
-var h2 = document.querySelector('h2')
+var h2 = document.createElement('h2')
 var answerInput = localStorage.getItem('ANSWER')
+var score = 0
 
 startButton.onclick = startQuiz
 
@@ -84,3 +84,21 @@ function setNextQuestion(question) {
 }
 
 function showQuestion()
+
+var answer = window.prompt(questionsArr[i].prompt)
+    if(answer === questionsArr[i].answer){
+    score++
+    } else {
+
+    }
+  var finalscore = Math.round(score / questionsArr.length * 100)
+  
+  alert("Your score was " + finalscore + '%')
+  
+  }
+
+
+for(var i = 0; i < questionsArr.length; i++) {
+    console.log(questionsArr[i])
+  }
+  
