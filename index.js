@@ -51,30 +51,36 @@ var questionsArr = [
   },
 ]
 
-var quiz = document.getElementbyID('quiz')
+var quiz = document.getElementById('quiz')
 var score = 0
-const startButton = document.getElementbyID('start-quiz')
+var startButton = document.getElementById('start-quiz')
+var h2 = document.querySelector('h2')
+var answerInput = localStorage.getItem('ANSWER')
 
-startButton.addEventListener ('click', startGame)
+startButton.onclick = startQuiz
 
+function startQuiz() {
+  startButton.classList.add('hide')
+  quiz.classList.remove('hide')
+  questionsArr = questions.sort(() => Math.random() - .5)
+  currentQuestionIndex = 0
+  setNextQuestion()
 
-function startGame() {
-  console.log('Started')
-  startButton.cla
-
-  
-  for(var i = 0; i < questionsArr.length; i++){
-    var answer = window.prompt(questionsArr[i].prompt)
-    if(answer === questionsArr[i].answer){
-    score++
+  var intervalID = setInterval(function() {
+  var seconds = Number(h2.textContent) -1
+    if(seconds === -1) {
+      clearInterval(intervalID)
+      h2.textContent = "Refresh to go again"
+      setTimeout(function() {
+      } , 3000)
     } else {
-
+      h2.textContent = seconds
     }
-  }
-  
-  var finalscore = Math.round(score / questionsArr.length * 100)
-  
-  alert("Your score was " + finalscore + '%')
-  
-  }
+  } , 3000)
+}
 
+function setNextQuestion(question) {
+  showQuestion(questionsArr)
+}
+
+function showQuestion()
