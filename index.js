@@ -49,4 +49,32 @@ var questionsArr = [
       'Macaroni Salad',
     ]
   },
-] // Your code here
+]
+
+var quiz = document.getElementbyID('quiz')
+var score = 0
+const startButton = document.getElementbyID('start-quiz')
+
+startButton.addEventListener ('click', startGame)
+
+
+function startGame() {
+  console.log('Started')
+  startButton.cla
+
+  
+  for(var i = 0; i < questionsArr.length; i++){
+    var answer = window.prompt(questionsArr[i].prompt)
+    if(answer === questionsArr[i].answer){
+    score++
+    } else {
+
+    }
+  }
+  
+  var finalscore = Math.round(score / questionsArr.length * 100)
+  
+  alert("Your score was " + finalscore + '%')
+  
+  }
+
