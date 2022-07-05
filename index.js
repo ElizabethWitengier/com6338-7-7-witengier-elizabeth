@@ -51,54 +51,103 @@ var questionsArr = [
   },
 ]
 
-var quiz = document.getElementById('quiz')
-var startButton = document.getElementById('start-quiz')
-var h2 = document.createElement('h2')
-var answerInput = localStorage.getItem('ANSWER')
+var quizContainer = document.getElementById('quiz')
 var score = 0
+var currentQuestion = 0
+var timeRemaining
+var timerId
 
-startButton.onclick = startQuiz
-
-function startQuiz() {
-  startButton.classList.add('hide')
-  quiz.classList.remove('hide')
-  questionsArr = questions.sort(() => Math.random() - .5)
-  currentQuestionIndex = 0
-  setNextQuestion()
-
-  var intervalID = setInterval(function() {
-  var seconds = Number(h2.textContent) -1
-    if(seconds === -1) {
-      clearInterval(intervalID)
-      h2.textContent = "Refresh to go again"
-      setTimeout(function() {
-      } , 3000)
-    } else {
-      h2.textContent = seconds
+quizContainer.onclick = function(e) {
+  if(e.target.id === 'start-quiz'){
+    drawQuestion()
+  } else if (e.target.parentElement.id === 'choices' && e.target.tagName === 'BUTTON') {
+    if(e.target.textContent === questionsArr[currentQuestion].answer){
+      score++
     }
-  } , 3000)
+    clearInterval(timerId)
+    currentQuestion++
+
+    if(currentQuestion < questionsArr.length) {
+      drawQuestion()
+    } else {
+      endGame()
+    }
+  }
 }
 
-function setNextQuestion(question) {
-  showQuestion(questionsArr)
+function drawGameStart() {
+  score = 0
+  currentQuestion = 0
+  quizContainer.innerHTML = ""
+  var previousScore = localStorage.getItem('previous-score')
+
+  if(previousScore) {
+    var previousScoreE1 = document.createElement('p')
+    previousScoreE1.textContent = 'Previous Score: ' + previousScore
+    quizContainer.appendChild(previousScoreE1)
+  }
+
+  var startBtn = document.createElement('button')
+  startBtn.id = 'start-quiz'
+  startBtn.textContent = "Start Quiz!"
+  quizContainer.appendChild(startBtn)
 }
 
-function showQuestion()
+function drawQuestion() {
+  var questionObj = questionsArr[currentQuestion]
+  quizContainer.innerHTML= ""
 
-var answer = window.prompt(questionsArr[i].prompt)
-    if(answer === questionsArr[i].answer){
-    score++
+  var questionTextE1 = document.createElement('p')
+  questionTextE1.textContent = questionObj.question
+  quizContainer.appendChild(questionTextE1)
+
+  var choicesContainer = document.createElement('div')
+  choicesContainer.id = 'choices'
+  quizContainer.appendChild(choicesContainer)
+
+  questionObj.options.forEach(function(choice) {
+    var btn = document.createElement('button')
+    btn.textContent = choice
+    choicesContainer.appendChild(btn)
+  })
+
+  timeRemaining = 30
+  var timerE1 = document.createElement('p')
+  timerE1.id = 'timer'
+  timerE1.textContent = timeRemaining
+  quizContainer.appendChild(timerE1)
+
+  startTimer()
+}
+
+function startTimer() {
+  var timerE1 = document.getElementById('timer')
+  
+  timerId = setInterval(function() {
+    timeRemaining--
+    if (timeRemaining >= 0) {
+        timerE1.textContent = timeRemaining
     } else {
+      clearInterval(timerId)
 
+      currentQuestion++
+
+      if(currentQuestion < questionsArr.length) {
+        drawQuestion()
+      } else {
+        endGame()
+      }
     }
-  var finalscore = Math.round(score / questionsArr.length * 100)
-  
-  alert("Your score was " + finalscore + '%')
-  
-  }
+  }, 1000)
+}
 
+function endGame() {
+  quizContainer.innerHTML = ""
 
-for(var i = 0; i < questionsArr.length; i++) {
-    console.log(questionsArr[i])
-  }
+  var percentage = Math.round(score / questionsArr.length * 100) + "%"
+  localStorage.setItem('previous-score', percentage)
+  drawGameStart()
+}
+
+drawGameStart()
   
